@@ -173,3 +173,83 @@ finalDF <- do.call("rbind", citynames)
 
 #Remove useless columns
 finalDF <- finalDF[-c(2,5,14,18,19)]
+
+
+
+############################################################################################################################################################
+#Building Graphs
+
+
+#Bar graph build
+locations <- c(
+  "Asheville", "Austin", "Boston", "Cambridge", "Chicago", "Columbus",
+  "Dallas", "Denver", "finalDF", "FortWorth", "FtLauderdale", "Hawaii",
+  "JerseyCity", "LasVegas", "LosAngeles", "Nashville", "Newark",
+  "NewOrleans", "NewYorkCity", "Oakland", "PacificGrove", "RhodeIsland",
+  "Rochester", "Salem", "SanDiego", "SanFrancisco", "SanMateo",
+  "SantaClara", "SantaCruz", "Seattle", "TwinCities", "WashingtonDC"
+)
+mean_prices <- numeric(length(locations))
+
+for (i in 1:length(locations)){
+  mean_prices[i] <- mean(get(locations[i])$price)
+}
+
+sorted_index <- order(mean_prices)
+sorted_locations <- locations[sorted_index]
+sorted_mean_prices <- mean_prices[sorted_index]
+num_bars <- length(sorted_mean_prices)
+color_palette <- colorRampPalette(c("blue", "red"))(num_bars)
+barplot(sorted_mean_prices, main = "Mean Prices in Increasing Order", names.arg = sorted_locations, las = 2, cex.names = 0.9, col = color_palette)
+
+
+
+#Scatterplot build
+mean_reviews <- numeric(length(locations))
+
+# Calculate the mean price for each location and store it in the vector
+for (i in 1:length(locations)){
+  mean_reviews[i] <- mean(get(locations[i])$number_of_reviews)
+}
+
+sorted_index <- order(mean_reviews)
+sorted_locations <- locations[sorted_index]
+sorted_mean_reviews <- mean_reviews[sorted_index]
+plot(mean_reviews,mean_prices,xlab = "Mean Number of Reviews", ylab = "Mean Price per Night", )
+
+#Creating a simmilar bar graph based on the tax rate of short term rentals by state
+#https://realtorparty.realtor/wp-content/uploads/2018/11/HTA-Chart-State-Short-Term-Rental-Tax-Rate.pdf
+State_Tax_Rate = c(5,0,5.5,7.875,0,2.91,15,0,14.80,6,4,10.25,8,6,7,5,6.5,7,4.5,9,6,5,6,6.875,7,4.255,7,6.5,0,9,11.625,5.125,4,4.75,5,5.75,4.5,1.8,6,10.5,7,4.5,7,6,5.02,9,4.3,6.971,6,5,4)
+States_Alpha_Order <- c(
+  "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
+  "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
+  "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
+  "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi",
+  "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey",
+  "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma",
+  "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
+  "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
+  "West Virginia", "Wisconsin", "Wyoming","District of Columbia"
+)
+
+
+sorted_index_tax <- order(State_Tax_Rate)
+sorted_locations_tax <- States_Alpha_Order[sorted_index_tax]
+sorted_tax_rate <- State_Tax_Rate[sorted_index_tax]
+num_bars <- length(sorted_index_tax)
+color_palette <- colorRampPalette(c("purple", "green"))(num_bars)
+
+barplot(sorted_tax_rate, main = "Tax Rate in Increasing Order", names.arg = sorted_locations_tax, las = 2, cex.names = 0.6, col = color_palette)
+
+#Creating a scatterplot of the states tax rate against the average rental price within the state.
+city_state_vector <- c(
+  "North Carolina", "Texas", "Massachusetts", "Massachusetts", "Illinois",
+  "Ohio", "Texas", "Colorado", "Texas", "Florida", "Hawaii", "New Jersey",
+  "Nevada", "California", "Tennessee", "New Jersey", "Louisiana", "New York",
+  "California", "California", "Rhode Island", "New York", "Oregon", "California",
+  "California", "California", "California", "California", "Washington",
+  "Minnesota", "District of Columbia"
+)
+city_state_tax_rate = c(4.75,6,5,5,6,5.75,6,2.91,6,6,10.25,11.625,0,0,7,11.625,0,4.5,4,0,0,10.5,4,1.8,0,0,0,0,0,6.971,6.875,14.80)
+plot(city_state_tax_rate, mean_prices, xlab = "Mean Tax Rate of State", ylab = "Mean Price per Night within City")
+
