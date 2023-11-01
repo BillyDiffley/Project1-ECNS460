@@ -188,13 +188,10 @@ finalDF <- finalDF[-c(2,5,14,18,19)]
 
 #Bar graph build
 locations <- c(
-<<<<<<< HEAD
   "Asheville", "Austin", "Boston", "Bozeman", "Cambridge", "Chicago", "Columbus",
   "Dallas", "Denver", "FortWorth", "FtLauderdale", "Hawaii",
-=======
   "Asheville", "Austin", "Boston", "Cambridge", "Chicago", "Columbus",
   "Dallas", "Denver", "finalDF", "FortWorth", "FtLauderdale", "Hawaii",
->>>>>>> bdd88bb72793336961a9f7997091b695753fba9e
   "JerseyCity", "LasVegas", "LosAngeles", "Nashville", "Newark",
   "NewOrleans", "NewYorkCity", "Oakland", "PacificGrove", "RhodeIsland",
   "Rochester", "Salem", "SanDiego", "SanFrancisco", "SanMateo",
@@ -213,8 +210,6 @@ num_bars <- length(sorted_mean_prices)
 color_palette <- colorRampPalette(c("blue", "red"))(num_bars)
 barplot(sorted_mean_prices, main = "Mean Prices in Increasing Order", names.arg = sorted_locations, las = 2, cex.names = 0.9, col = color_palette)
 
-
-
 #Scatterplot build
 mean_reviews <- numeric(length(locations))
 
@@ -228,12 +223,7 @@ sorted_locations <- locations[sorted_index]
 sorted_mean_reviews <- mean_reviews[sorted_index]
 plot(mean_reviews,mean_prices,xlab = "Mean Number of Reviews", ylab = "Mean Price per Night", )
 
-<<<<<<< HEAD
 #Creating a similar bar graph based on the tax rate of short term rentals by state
-
-=======
-#Creating a simmilar bar graph based on the tax rate of short term rentals by state
->>>>>>> bdd88bb72793336961a9f7997091b695753fba9e
 #https://realtorparty.realtor/wp-content/uploads/2018/11/HTA-Chart-State-Short-Term-Rental-Tax-Rate.pdf
 State_Tax_Rate = c(5,0,5.5,7.875,0,2.91,15,0,14.80,6,4,10.25,8,6,7,5,6.5,7,4.5,9,6,5,6,6.875,7,4.255,7,6.5,0,9,11.625,5.125,4,4.75,5,5.75,4.5,1.8,6,10.5,7,4.5,7,6,5.02,9,4.3,6.971,6,5,4)
 States_Alpha_Order <- c(
@@ -259,11 +249,8 @@ barplot(sorted_tax_rate, main = "Tax Rate in Increasing Order", names.arg = sort
 
 #Creating a scatterplot of the states tax rate against the average rental price within the state.
 city_state_vector <- c(
-<<<<<<< HEAD
   "North Carolina", "Texas", "Massachusetts", "Montana", "Massachusetts", "Illinois",
-=======
   "North Carolina", "Texas", "Massachusetts", "Massachusetts", "Illinois",
->>>>>>> bdd88bb72793336961a9f7997091b695753fba9e
   "Ohio", "Texas", "Colorado", "Texas", "Florida", "Hawaii", "New Jersey",
   "Nevada", "California", "Tennessee", "New Jersey", "Louisiana", "New York",
   "California", "California", "Rhode Island", "New York", "Oregon", "California",
@@ -272,8 +259,6 @@ city_state_vector <- c(
 )
 city_state_tax_rate = c(4.75,6,5,5,6,5.75,6,2.91,6,6,10.25,11.625,0,0,7,11.625,0,4.5,4,0,0,10.5,4,1.8,0,0,0,0,0,6.971,6.875,14.80)
 plot(city_state_tax_rate, mean_prices, xlab = "Mean Tax Rate of State", ylab = "Mean Price per Night within City")
-
-<<<<<<< HEAD
 
 #Locations that require either an operating license or are zoning restricted
 restrictedList <- c("Asheville", "Dallas", "Denver", "FortWorth", "JerseyCity"
