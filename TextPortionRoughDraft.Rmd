@@ -1,0 +1,69 @@
+---
+title: "Stage2(Text Portion)"
+output: html_document
+date: "2023-11-01"
+---
+      Our topic focuses on how different policies across state's effect the overall price of short term rentals such as AirBnB. Our motivation for the topic revolves around recent policy changes dealing with short term rentals in Bozeman, Montana. The data that we have gathered consists of many cities spread across a majority of states in the US and short term rental tax rates in the US. Our data covers all available data in the sector. This consists of the most recent months data for 32 cities across the US. In our code, we manipulate this data by first importing all of the files in VIA .csv files on our GitHub Repository, then we save all of that data into different dataframes with the city name as the data frame title. Next, we add a location column to all of the dataframes and add in that city's location. Then, after each dataframe has a column with their location we bind the data frames togeather into one big data set. After binding, we then took out the unnessecary columns. The units in our dataframe are very self explanatory, an example of this is the minimum nights is a variable tracking the Minimum Nights the short term rental must be rented. When looking for missing data, our dataset was initially very clean and did not require much, if any, cleaning. As for any extreme values we felt as if they were an important representation of our dataset therefore we did not exclude any data. The extreme values in our dataset are important because they show the effect of different rates at the more expensive 9 bedroom, 9 bathroom homes which is although not common, an important aspect of looking at the effect of a policy change. 
+      
+  After importing and cleaning our data we were able to make interesting plots. The first being a bar plot that shows the mean prices of a short term rental in increasing order. At one end of the spectrum we have Rochester where the mean price of a rental is just over 100 dollars whereas on the other end of the spectrum we have Hawaii where the mean price of a rental is over 500 dollars. This durastic difference is just one small peice into what we are looking to investigate.
+```{r}
+sorted_index <- order(mean_prices)
+sorted_locations <- locations[sorted_index]
+sorted_mean_prices <- mean_prices[sorted_index]
+num_bars <- length(sorted_mean_prices)
+color_palette <- colorRampPalette(c("blue", "red"))(num_bars)
+barplot(sorted_mean_prices, main = "Mean Prices in Increasing Order", names.arg = sorted_locations, las = 2, cex.names = 0.9, col = color_palette)
+```
+      
+  After seeing that bar plot we decided to make a scatterplot to see if the number of reviews had any effect on the mean price per night This scatterplot however, did not show us much as the data is very spread apart and looks to have little correlation as the number of reviews grow.
+```{r}
+mean_reviews <- numeric(length(locations))
+
+# Calculate the mean price for each location and store it in the vector
+for (i in 1:length(locations)){
+  mean_reviews[i] <- mean(get(locations[i])$number_of_reviews)
+}
+
+sorted_index <- order(mean_reviews)
+sorted_locations <- locations[sorted_index]
+sorted_mean_reviews <- mean_reviews[sorted_index]
+plot(mean_reviews,mean_prices,xlab = "Number of Reviews", ylab = "Mean Price per Night", )
+```
+      
+   After looking at the scatterplot we figured it was time to get into the meat and bones of our project and focus on the policy effecting the price of a short term rental. To do this we found a pdf online that contained an article stating all of the tax rates in different states. Because importing the article would have been impossible we manually made a dataframe that pairs each state with their short term rental tax rate therefore giving us the information on the pdf as a dataframe in R Studio. We then made a simmilar bar plot as to the first bar plot we made where we display the tax rate of each state in increasing order. With some states having a 0% tax rate and other states having as high as a 15% tax rate we new this was a great graph to add but not the end of the story line in our discoveries.
+```{r}
+State_Tax_Rate = c(5,0,5.5,7.875,0,2.91,15,0,14.80,6,4,10.25,8,6,7,5,6.5,7,4.5,9,6,5,6,6.875,7,4.255,7,6.5,0,9,11.625,5.125,4,4.75,5,5.75,4.5,1.8,6,10.5,7,4.5,7,6,5.02,9,4.3,6.971,6,5,4)
+States_Alpha_Order <- c(
+  "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
+  "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
+  "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
+  "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi",
+  "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey",
+  "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma",
+  "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
+  "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
+  "West Virginia", "Wisconsin", "Wyoming","District of Columbia"
+)
+sorted_index_tax <- order(State_Tax_Rate)
+sorted_locations_tax <- States_Alpha_Order[sorted_index_tax]
+sorted_tax_rate <- State_Tax_Rate[sorted_index_tax]
+num_bars <- length(sorted_index_tax)
+color_palette <- colorRampPalette(c("purple", "green"))(num_bars)
+
+barplot(sorted_tax_rate, main = "Tax Rate in Increasing Order", names.arg = sorted_locations_tax, las = 2, cex.names = 0.6, col = color_palette)
+```
+   We then added a scatterplot depicting the tax rate of the state on the x axis to the mean price of a one night stay in different states on the y axis. Without having done any official statistical testing, the untrained eye can see an obvious trend as to the higher the tax rate the state has the more expensive a one night stay will be in a short term rental. 
+```{r}
+city_state_vector <- c(
+  "North Carolina", "Texas", "Massachusetts", "Massachusetts", "Illinois",
+  "Ohio", "Texas", "Colorado", "Texas", "Florida", "Hawaii", "New Jersey",
+  "Nevada", "California", "Tennessee", "New Jersey", "Louisiana", "New York",
+  "California", "California", "Rhode Island", "New York", "Oregon", "California",
+  "California", "California", "California", "California", "Washington",
+  "Minnesota", "District of Columbia"
+)
+city_state_tax_rate = c(4.75,6,5,5,6,5.75,6,2.91,6,6,10.25,11.625,0,0,7,11.625,0,4.5,4,0,0,10.5,4,1.8,0,0,0,0,0,6.971,6.875,14.80)
+plot(city_state_tax_rate, mean_prices, xlab = "Mean Tax Rate of State", ylab = "Mean Price per Night within City")
+```
+   
+   
