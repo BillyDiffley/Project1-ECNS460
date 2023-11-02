@@ -1,37 +1,240 @@
 ---
-title: "Stage2(Text Portion)"
+title: "ECNS460 Final Project"
 output: html_document
 date: "2023-11-01"
 ---
-      Our topic focuses on how different policies across state's effect the overall price of short term rentals such as AirBnB. Our motivation for the topic revolves around recent policy changes dealing with short term rentals in Bozeman, Montana. The data that we have gathered consists of many cities spread across a majority of states in the US and short term rental tax rates in the US. Our data covers all available data in the sector. This consists of the most recent months data for 32 cities across the US. In our code, we manipulate this data by first importing all of the files in VIA .csv files on our GitHub Repository, then we save all of that data into different dataframes with the city name as the data frame title. Next, we add a location column to all of the dataframes and add in that city's location. Then, after each dataframe has a column with their location we bind the data frames togeather into one big data set. After binding, we then took out the unnessecary columns. The units in our dataframe are very self explanatory, an example of this is the minimum nights is a variable tracking the Minimum Nights the short term rental must be rented. When looking for missing data, our dataset was initially very clean and did not require much, if any, cleaning. As for any extreme values we felt as if they were an important representation of our dataset therefore we did not exclude any data. The extreme values in our dataset are important because they show the effect of different rates at the more expensive 9 bedroom, 9 bathroom homes which is although not common, an important aspect of looking at the effect of a policy change. 
-      
-  After importing and cleaning our data we were able to make interesting plots. The first being a bar plot that shows the mean prices of a short term rental in increasing order. At one end of the spectrum we have Rochester where the mean price of a rental is just over 100 dollars whereas on the other end of the spectrum we have Hawaii where the mean price of a rental is over 500 dollars. This durastic difference is just one small peice into what we are looking to investigate.
-```{r}
+
+# Motivations
+
+Our topic focuses on how different policies across state's effect the overall price of short term rentals such as AirBnB. Our motivation for the topic revolves around recent policy suggestions pertaining to short term rentals in Bozeman, Montana.
+
+# Data Construction
+
+The data that we have gathered consists of many cities spread across a majority of states in the US and short term rental tax rates in the US. Our data covers all available data from our data source located in the U.S. This consists of the most recent months data for 32 cities. In our code, we manipulate this data by first importing all of the files in via .csv files we downloaded to our GitHub Repository then importing all of the data into individual data frames with the city name as the data frame title. Next, we add a location column to all of the data frames as there was no prior labeling present in the imported data. This makes the final merged data usable and was a crucial step of our process. After each data frame had mutated a column with their location, we bound the data frames together into our "final" tidy data set and proceeded with the general cleaning process.
+
+After merging the data frames together, we took out the all columns we knew we would not be exploring, erring on the side of caution and leaving in more than was realistically necessary as we were still in the exploratory phase of our research. The units in our data are primarily numerical and act as counts of values. An example of this would be the minimum nights variable tracking the minimum number of nights the short term rental must be rented per listing. When looking for missing data, our data set was initially very clean and did not require much, if any, cleaning for the columns we were interested in exploring. Some columns did have missing or NA values, but those columns were of little import. We chose not to remove any extreme data as there were not any points that were taking away from the findings of our research and all points thus far have seemed to contribute appropriately. The extreme values in our data set are important to retain as they help encapsulate the entire market of AirBnB, a company that has accumulated much ill will in the eyes of the public and policy makers alike. To remove these extreme examples takes away much of the absurdity that kindles this dissent, thus painting an incomplete picture.
+
+# Data Exploration
+
+After importing and cleaning our data we were able to make several interesting findings, starting with a bar plot that shows the mean prices of a short term rental in increasing order. At one end of the spectrum we have Rochester where the mean price of a rental is just over 100 dollars per night whereas on the other end of the spectrum we have Hawaii where the mean price of a rental is over 500 dollars per night. This drastic difference is just one small piece into what we are looking to investigate and helps us determine where each individual city sits on the spectrum. This graph was primarily used to better understand our data set better in a visual way.
+
+```{r, echo=FALSE, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}
+
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+
+#Read in all city data into a data frame
+
+Asheville <- read.csv("RawData/AshevilleSeptember.csv")
+Austin <- read.csv("RawData/AustinSeptember.csv")
+Boston <- read.csv("RawData/BostonSeptember.csv")
+Bozeman <- read.csv("RawData/BozemanSeptember.csv")
+Cambridge <- read.csv("RawData/CambridgeSeptember.csv")
+Chicago <- read.csv("RawData/ChicagoSeptember.csv")
+Columbus <- read.csv("RawData/ColumbusSeptember.csv")
+Dallas <- read.csv("RawData/DallasSeptember.csv")
+Denver <- read.csv("RawData/DenverSeptember.csv")
+FortWorth <- read.csv("RawData/FortWorthSeptember.csv")
+FtLauderdale <- read.csv("RawData/FtLauderdaleSeptember.csv")
+Hawaii <- read.csv("RawData/HawaiiSeptember.csv")
+JerseyCity <- read.csv("RawData/JerseyCitySeptember.csv")
+LasVegas <- read.csv("RawData/LasVegasSeptember.csv")
+LosAngeles <- read.csv("RawData/LosAngelesSeptember.csv")
+Nashville <- read.csv("RawData/NashvilleSeptember.csv")
+Newark <- read.csv("RawData/NewarkSeptember.csv")
+NewOrleans <- read.csv("RawData/NewOrleansSeptember.csv")
+NewYorkCity <- read.csv("RawData/NewYorkCitySeptember.csv")
+Oakland <- read.csv("RawData/OaklandSeptember.csv")
+PacificGrove <- read.csv("RawData/PacificGroveSeptember.csv")
+RhodeIsland <- read.csv("RawData/RhodeIslandSeptember.csv")
+Rochester <- read.csv("RawData/RochesterSeptember.csv")
+Salem <- read.csv("RawData/SalemSeptember.csv")
+SanDiego <- read.csv("RawData/SanDiegoSeptember.csv")
+SanFrancisco <- read.csv("RawData/SanFranciscoSeptember.csv")
+SanMateo <- read.csv("RawData/SanMateoSeptember.csv")
+SantaClara <- read.csv("RawData/SantaClaraSeptember.csv")
+SantaCruz <- read.csv("RawData/SantaCruzSeptember.csv")
+Seattle <- read.csv("RawData/SeattleSeptember.csv")
+TwinCities <- read.csv("RawData/TwinCitiesSeptember.csv")
+WashingtonDC <- read.csv("RawData/WashingtonDCSeptember.csv")
+
+#Add a "Location" column to each data frame to maintain a reference once all have been binded together
+
+Asheville <- Asheville %>%
+  mutate(Location = "Asheville") %>%
+  relocate(Location)
+
+Austin <- Austin %>%
+  mutate(Location = "Austin") %>%
+  relocate(Location)
+
+Boston <- Boston %>%
+  mutate(Location = "Boston") %>%
+  relocate(Location)
+
+Bozeman <- Bozeman %>%
+  mutate(Location = "Bozeman") %>%
+  relocate(Location)
+
+Cambridge <- Cambridge %>%
+  mutate(Location = "Cambridge") %>%
+  relocate(Location)
+
+Chicago <- Chicago %>%
+  mutate(Location = "Chicago") %>%
+  relocate(Location)
+
+Columbus <- Columbus %>%
+  mutate(Location = "Columbus") %>%
+  relocate(Location)
+
+Dallas <- Dallas %>%
+  mutate(Location = "Dallas") %>%
+  relocate(Location)
+
+Denver <- Denver %>%
+  mutate(Location = "Denver") %>%
+  relocate(Location)
+
+FortWorth <- FortWorth %>%
+  mutate(Location = "FortWorth") %>%
+  relocate(Location)
+
+FtLauderdale <- FtLauderdale %>%
+  mutate(Location = "FtLauderdale") %>%
+  relocate(Location)
+
+Hawaii <- Hawaii %>%
+  mutate(Location = "Hawaii") %>%
+  relocate(Location)
+
+JerseyCity <- JerseyCity %>%
+  mutate(Location = "JerseyCity") %>%
+  relocate(Location)
+
+LasVegas <- LasVegas %>%
+  mutate(Location = "LasVegas") %>%
+  relocate(Location)
+
+LosAngeles <- LosAngeles %>%
+  mutate(Location = "LosAngeles") %>%
+  relocate(Location)
+
+Nashville <- Nashville %>%
+  mutate(Location = "Nashville") %>%
+  relocate(Location)
+
+Newark <- Newark %>%
+  mutate(Location = "Newark") %>%
+  relocate(Location)
+
+NewOrleans <- NewOrleans %>%
+  mutate(Location = "NewOrleans") %>%
+  relocate(Location)
+
+NewYorkCity <- NewYorkCity %>%
+  mutate(Location = "NewYorkCity") %>%
+  relocate(Location)
+
+Oakland <- Oakland %>%
+  mutate(Location = "Oakland") %>%
+  relocate(Location)
+
+PacificGrove <- PacificGrove %>%
+  mutate(Location = "PacificGrove") %>%
+  relocate(Location)
+
+RhodeIsland <- RhodeIsland %>%
+  mutate(Location = "RhodeIsland") %>%
+  relocate(Location)
+
+Rochester <- Rochester %>%
+  mutate(Location = "Rochester") %>%
+  relocate(Location)
+
+Salem <- Salem %>%
+  mutate(Location = "Salem") %>%
+  relocate(Location)
+
+SanDiego <- SanDiego %>%
+  mutate(Location = "SanDiego") %>%
+  relocate(Location)
+
+SanFrancisco <- SanFrancisco %>%
+  mutate(Location = "SanFrancisco") %>%
+  relocate(Location)
+
+SanMateo <- SanMateo %>%
+  mutate(Location = "SanMateo") %>%
+  relocate(Location)
+
+SantaClara <- SantaClara %>%
+  mutate(Location = "SantaClara") %>%
+  relocate(Location)
+
+SantaCruz <- SantaCruz %>%
+  mutate(Location = "SantaCruz") %>%
+  relocate(Location)
+
+Seattle <- Seattle %>%
+  mutate(Location = "Seattle") %>%
+  relocate(Location)
+
+TwinCities <- TwinCities %>%
+  mutate(Location = "TwinCities") %>%
+  relocate(Location)
+
+WashingtonDC <- WashingtonDC %>%
+  mutate(Location = "WashingtonDC") %>%
+  relocate(Location)
+
+#Create list of all cities
+citynames <- list(Asheville, Austin, Boston, Bozeman, Cambridge, Chicago, Columbus, Dallas, Denver, FortWorth, FtLauderdale,
+                  Hawaii, JerseyCity, LasVegas, LosAngeles, Nashville, Newark, NewOrleans, NewYorkCity, Oakland, PacificGrove,
+                  RhodeIsland, Rochester, Salem, SanDiego, SanFrancisco, SanMateo, SantaClara, SantaCruz, Seattle, TwinCities, WashingtonDC)
+
+#Create final dataframe by rowbinding all data frames together at one time
+finalDF <- do.call("rbind", citynames)
+
+#Remove useless columns
+finalDF <- finalDF[-c(2,5,14,18,19)]
+
+
+
+############################################################################################################################################################
+#Building Graphs
+
+
+#Bar graph build
+locations <- c(
+  "Asheville", "Austin", "Boston", "Cambridge", "Chicago", "Columbus",
+  "Dallas", "Denver", "finalDF", "FortWorth", "FtLauderdale", "Hawaii",
+  "JerseyCity", "LasVegas", "LosAngeles", "Nashville", "Newark",
+  "NewOrleans", "NewYorkCity", "Oakland", "PacificGrove", "RhodeIsland",
+  "Rochester", "Salem", "SanDiego", "SanFrancisco", "SanMateo",
+  "SantaClara", "SantaCruz", "Seattle", "TwinCities", "WashingtonDC"
+)
+mean_prices <- numeric(length(locations))
+
+for (i in 1:length(locations)){
+  mean_prices[i] <- mean(get(locations[i])$price)
+}
+
 sorted_index <- order(mean_prices)
 sorted_locations <- locations[sorted_index]
 sorted_mean_prices <- mean_prices[sorted_index]
 num_bars <- length(sorted_mean_prices)
 color_palette <- colorRampPalette(c("blue", "red"))(num_bars)
 barplot(sorted_mean_prices, main = "Mean Prices in Increasing Order", names.arg = sorted_locations, las = 2, cex.names = 0.9, col = color_palette)
-```
-      
-  After seeing that bar plot we decided to make a scatterplot to see if the number of reviews had any effect on the mean price per night This scatterplot however, did not show us much as the data is very spread apart and looks to have little correlation as the number of reviews grow.
-```{r}
-mean_reviews <- numeric(length(locations))
 
-# Calculate the mean price for each location and store it in the vector
-for (i in 1:length(locations)){
-  mean_reviews[i] <- mean(get(locations[i])$number_of_reviews)
-}
-
-sorted_index <- order(mean_reviews)
-sorted_locations <- locations[sorted_index]
-sorted_mean_reviews <- mean_reviews[sorted_index]
-plot(mean_reviews,mean_prices,xlab = "Number of Reviews", ylab = "Mean Price per Night", )
 ```
-      
-   After looking at the scatterplot we figured it was time to get into the meat and bones of our project and focus on the policy effecting the price of a short term rental. To do this we found a pdf online that contained an article stating all of the tax rates in different states. Because importing the article would have been impossible we manually made a dataframe that pairs each state with their short term rental tax rate therefore giving us the information on the pdf as a dataframe in R Studio. We then made a simmilar bar plot as to the first bar plot we made where we display the tax rate of each state in increasing order. With some states having a 0% tax rate and other states having as high as a 15% tax rate we new this was a great graph to add but not the end of the story line in our discoveries.
-```{r}
+
+After looking at the preliminary chart we began to focus on policies that impact the prices of short term rentals. To begin this process, we created a vector of the short term rental tax rates by state we found from a secondary source. We unfortunately had to do this process, along with the linking of the rates with their respective state, manually as the scraping efforts were ineffective. We then made a similar bar plot as to the first bar plot we made where we display the tax rate of each state in increasing order. With the range of tax rates ranging up to as much as 15%, we new this was another great preliminary graph to add.
+
+```{r, echo=FALSE, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}
+#Creating a similar bar graph based on the tax rate of short term rentals by state
+#https://realtorparty.realtor/wp-content/uploads/2018/11/HTA-Chart-State-Short-Term-Rental-Tax-Rate.pdf
 State_Tax_Rate = c(5,0,5.5,7.875,0,2.91,15,0,14.80,6,4,10.25,8,6,7,5,6.5,7,4.5,9,6,5,6,6.875,7,4.255,7,6.5,0,9,11.625,5.125,4,4.75,5,5.75,4.5,1.8,6,10.5,7,4.5,7,6,5.02,9,4.3,6.971,6,5,4)
 States_Alpha_Order <- c(
   "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
@@ -44,6 +247,8 @@ States_Alpha_Order <- c(
   "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
   "West Virginia", "Wisconsin", "Wyoming","District of Columbia"
 )
+
+
 sorted_index_tax <- order(State_Tax_Rate)
 sorted_locations_tax <- States_Alpha_Order[sorted_index_tax]
 sorted_tax_rate <- State_Tax_Rate[sorted_index_tax]
@@ -51,11 +256,16 @@ num_bars <- length(sorted_index_tax)
 color_palette <- colorRampPalette(c("purple", "green"))(num_bars)
 
 barplot(sorted_tax_rate, main = "Tax Rate in Increasing Order", names.arg = sorted_locations_tax, las = 2, cex.names = 0.6, col = color_palette)
+
 ```
-   We then added a scatterplot depicting the tax rate of the state on the x axis to the mean price of a one night stay in different states on the y axis. Without having done any official statistical testing, the untrained eye can see an obvious trend as to the higher the tax rate the state has the more expensive a one night stay will be in a short term rental. 
-```{r}
+
+To further understand the role of taxing short term rentals as a preventative measure for AirBnB overpricing, we created a visualization of the relationship between tax rate and the mean price per night by location. To start, we removed all states that do not choose to tax short term rentals as we determined these states were out of the sample as we are trying to gauge the impact states saw when implementing taxes as a preventative measure for inflated prices. The datapoints were not permanently removed and will be considered in future findings. After filtering and plotting the data, a linear trend line was added for visualization purposes. The evident positive relationship is not overwhelmingly strong, but it is enough to suggest that there is a measurable increase in the price to the consumer when AirBnB renters are taxed at an elevated rate. Policy makers should consider that these taxes can provide outside benefits that the public can use, but these findings suggest that taxing short term rentals at an increased rate is hurting the consumer in the rental market and doing little to thwart homeowners for increasing their nightly rates.
+
+```{r, echo=FALSE, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}
+
+#Creating a scatterplot of the states tax rate against the average rental price within the state.
 city_state_vector <- c(
-  "North Carolina", "Texas", "Massachusetts", "Massachusetts", "Illinois",
+  "North Carolina", "Texas", "Massachusetts","Montana", "Massachusetts", "Illinois",
   "Ohio", "Texas", "Colorado", "Texas", "Florida", "Hawaii", "New Jersey",
   "Nevada", "California", "Tennessee", "New Jersey", "Louisiana", "New York",
   "California", "California", "Rhode Island", "New York", "Oregon", "California",
@@ -63,7 +273,78 @@ city_state_vector <- c(
   "Minnesota", "District of Columbia"
 )
 city_state_tax_rate = c(4.75,6,5,5,6,5.75,6,2.91,6,6,10.25,11.625,0,0,7,11.625,0,4.5,4,0,0,10.5,4,1.8,0,0,0,0,0,6.971,6.875,14.80)
-plot(city_state_tax_rate, mean_prices, xlab = "Mean Tax Rate of State", ylab = "Mean Price per Night within City")
+
+#Locations that require either an operating license or are zoning restricted
+restrictedList <- c("Asheville", "Dallas", "Denver", "FortWorth", "JerseyCity"
+                    ,"Oakland", "Salem", "SanFrancisco", "WashingtonDC")
+
+licenseList <- c("Austin", "Boston", "Columbus", "FtLauderdale", "Hawaii",
+                 "Nashville", "Newark", "New Orleans", "New York City",
+                 "PacificGrove", "RhodeIsland", "Seattle", "TwinCities")
+
+restrictedStates <- c("North Carolina", "Texas", "Colorado", "Texas", "New Jersey", "California",
+                      "Oregon", "California", "District of Columbia")
+
+licenseStates <- c("Texas", "Massachusetts", "Ohio", "Florida", "Hawaii", "Tennessee",
+                   "New Jersey", "Louisiana", "New York", "California", "Rhode Island"
+                   , "Washington", "Minnesota")
+
+#Compute mean number of days vacant by city
+finalDF <- finalDF %>%
+  group_by(Location) %>%
+  mutate(VacancyMean = mean(availability_365))
+
+vacMean <- unique(finalDF$VacancyMean)
+
+#Create data frame of data by single state
+taxedCities <- data.frame(city_state_vector, city_state_tax_rate, mean_prices, vacMean)
+colnames(taxedCities) <- c("Location", "TaxRate", "MeanPrice", "AvgVacancy")
+
+#Subset data
+taxedCitiesSub <- subset(taxedCities, city_state_tax_rate!=0)
+
+
+taxedCities <- taxedCities %>%
+  mutate(IsRestricted = ifelse(Location %in% restrictedStates,T,F)) %>%
+  mutate(IsLicensed = ifelse(Location %in% licenseStates,T,F))
+
+#Plot tax rate and mean prices
+ggplot(taxedCitiesSub, aes(TaxRate, MeanPrice)) + geom_point() + geom_smooth(method = "lm")
 ```
-   
-   
+
+Another key aspect of the rental market is the vacancy problems that arise in the market. Vacant houses benefit no one and only contribute negatively to the public. Thus, analysis as to whether or not decreased nightly rates actually correspond with lower vacancy rates was pertinent. Upon plotting the mean housing price against the average vacancy count of the listings in the data set (measured in nights per year), a marked negative relationship is observed. While the correlation is not strong, this would suggest that cheaper listing actually see more vacancy than their more expensive counterparts. This finding was incredibly interesting to us as our basic assumptions suggested that cheaper listings would see greatly increased occupancy rates. This relationship could be attributed to a discrepancy in the quality of listings at either end of the price range, with smaller abodes being less desirable for the typical short term renter and thus skewing the data away from the lower end of prices. While these findings suggest that occupancy problems in AirBnB's cannot be solved by simply decreasing the price of listings, it is hard to determine whether or not these findings are definitive.
+
+```{r, echo=FALSE, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}
+ggplot(taxedCities, aes(MeanPrice, AvgVacancy)) + geom_point() + geom_smooth(method = "lm")
+```
+
+The final stages of our analysis involved analyzing alternate measures meant to limit the mean prices of short term rentals across cities more directly. The two primary methods in the market are requiring a license for the homeowner to rent out their property and limiting the zoning areas that short term rentals are allowed. We used a secondary source to determine which states required these protocols and which ones did not. For each of these categories, we created a binary variable to indicate which cities falls into either category using tidyverse operations. After this process was completed, we re-created our original scatter plot of tax rates by state and the average price of the listings, only now adding in the grouping by licensing.
+
+```{r, echo=FALSE, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}
+
+#Remove zero tax rate from sample to look at the impact of "treated" cities
+taxedCitiesSub <- subset(taxedCities, city_state_tax_rate!=0)
+
+p = taxedCitiesSub %>% 
+  ggplot(aes(x = TaxRate, y = MeanPrice, label = Location)) +
+  geom_point(size = 2) +
+  geom_text(nudge_y = 15, size = 3) + 
+  xlab("Tax Rate by State") + 
+  ylab("Mean Price of STR by State") +
+  ggtitle("Tax Rate to Air BNB Price by State")
+
+p + geom_point(aes(color = IsLicensed), size = 3) + geom_smooth(method = "lm", se = F)
+
+```
+
+This process was repeated, only now displaying states that restrict by zoning areas.
+
+```{r, echo=FALSE, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}
+p + geom_point(aes(color = IsRestricted), size = 3) + geom_smooth(method = "lm", se = F)
+```
+
+These plots suggest that the general trends between groups do not deviate from one another a tremendous amount, indicating that these measures are not effective at alleviating price inflation within the short term rental market. This suggests that policy makers should consider alternative methods to solve inflated prices observed in AirBnB's.
+
+# Conclusion
+
+Upon analyzing the data of AirBnB short term rentals, the findings suggest that current measures have proved ineffective at decreasing the cost to consumer thus far. Furthermore, it is inconclusive as to whether or not driving the price down should be policy makers ultimate goal for alleviating stress on the housing markets as vacancy was shown to increase as prices were decreased. The city of Bozeman, a place that has seen housing prices soar, should look for alternative measures to alleviate stress on both housing vacancy and prices.

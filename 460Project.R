@@ -3,7 +3,7 @@ library(tidyverse)
 library(dplyr)
 library(ggplot2)
 
-#Read in all city data into a dataframe
+#Read in all city data into a data frame
 
 Asheville <- read.csv("AshevilleSeptember.csv")
 Austin <- read.csv("AustinSeptember.csv")
@@ -185,13 +185,10 @@ finalDF <- finalDF[-c(2,5,14,18,19)]
 ############################################################################################################################################################
 #Building Graphs
 
-
 #Bar graph build
 locations <- c(
-  "Asheville", "Austin", "Boston", "Bozeman", "Cambridge", "Chicago", "Columbus",
+  "Asheville", "Austin", "Boston","Bozeman", "Cambridge", "Chicago", "Columbus",
   "Dallas", "Denver", "FortWorth", "FtLauderdale", "Hawaii",
-  "Asheville", "Austin", "Boston", "Cambridge", "Chicago", "Columbus",
-  "Dallas", "Denver", "finalDF", "FortWorth", "FtLauderdale", "Hawaii",
   "JerseyCity", "LasVegas", "LosAngeles", "Nashville", "Newark",
   "NewOrleans", "NewYorkCity", "Oakland", "PacificGrove", "RhodeIsland",
   "Rochester", "Salem", "SanDiego", "SanFrancisco", "SanMateo",
@@ -249,8 +246,7 @@ barplot(sorted_tax_rate, main = "Tax Rate in Increasing Order", names.arg = sort
 
 #Creating a scatterplot of the states tax rate against the average rental price within the state.
 city_state_vector <- c(
-  "North Carolina", "Texas", "Massachusetts", "Montana", "Massachusetts", "Illinois",
-  "North Carolina", "Texas", "Massachusetts", "Massachusetts", "Illinois",
+  "North Carolina", "Texas", "Massachusetts","Montana", "Massachusetts", "Illinois",
   "Ohio", "Texas", "Colorado", "Texas", "Florida", "Hawaii", "New Jersey",
   "Nevada", "California", "Tennessee", "New Jersey", "Louisiana", "New York",
   "California", "California", "Rhode Island", "New York", "Oregon", "California",
@@ -258,7 +254,6 @@ city_state_vector <- c(
   "Minnesota", "District of Columbia"
 )
 city_state_tax_rate = c(4.75,6,5,5,6,5.75,6,2.91,6,6,10.25,11.625,0,0,7,11.625,0,4.5,4,0,0,10.5,4,1.8,0,0,0,0,0,6.971,6.875,14.80)
-plot(city_state_tax_rate, mean_prices, xlab = "Mean Tax Rate of State", ylab = "Mean Price per Night within City")
 
 #Locations that require either an operating license or are zoning restricted
 restrictedList <- c("Asheville", "Dallas", "Denver", "FortWorth", "JerseyCity"
@@ -284,9 +279,10 @@ vacMean <- unique(finalDF$VacancyMean)
 
 #Create data frame of data by single state
 taxedCities <- data.frame(city_state_vector, city_state_tax_rate, mean_prices, vacMean)
+colnames(taxedCities) <- c("Location", "TaxRate", "MeanPrice", "AvgVacancy")
 
 #Create new binary variable for grouping the variables
-colnames(taxedCities) <- c("Location", "TaxRate", "MeanPrice", "AvgVacancy")
+
 
 taxedCities <- taxedCities %>%
   mutate(IsRestricted = ifelse(Location %in% restrictedStates,T,F)) %>%
@@ -306,6 +302,9 @@ p = taxedCitiesSub %>%
   ylab("Mean Price of STR by State") +
   ggtitle("Tax Rate to Air BNB Price by State")
 
-p + geom_point(aes(color = IsLicensed), size = 3)
-p + geom_point(aes(color = IsRestricted), size = 3)
+p + geom_point(aes(color = IsLicensed), size = 3) + geom_smooth(method = "lm", se = F)
+p + geom_point(aes(color = IsRestricted), size = 3) + geom_smooth(method = "lm", se = F)
+
+#Plot tax rate and mean prices
+ggplot(taxedCitiesSub, aes(TaxRate, MeanPrice)) + geom_point() + geom_smooth(method = "lm")
 
