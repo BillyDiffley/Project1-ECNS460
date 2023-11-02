@@ -180,7 +180,8 @@ finalDF <- do.call("rbind", citynames)
 #Remove useless columns
 finalDF <- finalDF[-c(2,5,14,18,19)]
 
-
+#Save data set
+save(finalDF, file = "finalData.RData")
 
 ############################################################################################################################################################
 #Building Graphs
