@@ -41,12 +41,8 @@ for(i in 1:length(citynames)) {
 #Row Bind all data frames together
 finalDF <- do.call("rbind", citynames)
 
-
-
 #Remove useless columns
-#finalDF <- finalDF[-c(2,5,14,18,19)]
-
-
+finalDF <- finalDF[-c(5:8)]
 
 #Save data set
 save(finalDF, file = "finalData.RData")
