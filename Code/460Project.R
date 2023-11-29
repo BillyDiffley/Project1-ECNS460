@@ -3,41 +3,17 @@ library(tidyverse)
 library(dplyr)
 library(ggplot2)
 
-#Read in all city data into a data frame
+#Creates a list of locations we are looking into in the form of a string
+locationsdataframe <- read.csv("All_Locations.csv")
+locations = locationsdataframe$Locations
 
-Asheville <- read.csv("AshevilleSeptember.csv")
-Austin <- read.csv("AustinSeptember.csv")
-Boston <- read.csv("BostonSeptember.csv")
-Bozeman <- read.csv("BozemanSeptember.csv")
-Cambridge <- read.csv("CambridgeSeptember.csv")
-Chicago <- read.csv("ChicagoSeptember.csv")
-Columbus <- read.csv("ColumbusSeptember.csv")
-Dallas <- read.csv("DallasSeptember.csv")
-Denver <- read.csv("DenverSeptember.csv")
-FortWorth <- read.csv("FortWorthSeptember.csv")
-FtLauderdale <- read.csv("FtLauderdaleSeptember.csv")
-Hawaii <- read.csv("HawaiiSeptember.csv")
-JerseyCity <- read.csv("JerseyCitySeptember.csv")
-LasVegas <- read.csv("LasVegasSeptember.csv")
-LosAngeles <- read.csv("LosAngelesSeptember.csv")
-Nashville <- read.csv("NashvilleSeptember.csv")
-Newark <- read.csv("NewarkSeptember.csv")
-NewOrleans <- read.csv("NewOrleansSeptember.csv")
-NewYorkCity <- read.csv("NewYorkCitySeptember.csv")
-Oakland <- read.csv("OaklandSeptember.csv")
-PacificGrove <- read.csv("PacificGroveSeptember.csv")
-Asheville <- read.csv("AshevilleSeptember.csv")
-RhodeIsland <- read.csv("RhodeIslandSeptember.csv")
-Rochester <- read.csv("RochesterSeptember.csv")
-Salem <- read.csv("SalemSeptember.csv")
-SanDiego <- read.csv("SanDiegoSeptember.csv")
-SanFrancisco <- read.csv("SanFranciscoSeptember.csv")
-SanMateo <- read.csv("SanMateoSeptember.csv")
-SantaClara <- read.csv("SantaClaraSeptember.csv")
-SantaCruz <- read.csv("SantaCruzSeptember.csv")
-Seattle <- read.csv("SeattleSeptember.csv")
-TwinCities <- read.csv("TwinCitiesSeptember.csv")
-WashingtonDC <- read.csv("WashingtonDCSeptember.csv")
+#Creates a list of file path names
+file_paths <- setNames(paste0(locations, "September.csv"), locations)
+
+#Creates data frames iteratively
+for (location in locations) {
+  assign(paste(location), read.csv(file_paths[[location]]))
+}
 
 #Add a "Location" column to each data frame to maintain a reference once all have been binded together
 
@@ -169,7 +145,7 @@ WashingtonDC <- WashingtonDC %>%
   mutate(Location = "WashingtonDC") %>%
   relocate(Location)
 
-#Create list of all cities
+#Create list of all cities in the form of a df name
 citynames <- list(Asheville, Austin, Boston, Bozeman, Cambridge, Chicago, Columbus, Dallas, Denver, FortWorth, FtLauderdale,
                   Hawaii, JerseyCity, LasVegas, LosAngeles, Nashville, Newark, NewOrleans, NewYorkCity, Oakland, PacificGrove,
                   RhodeIsland, Rochester, Salem, SanDiego, SanFrancisco, SanMateo, SantaClara, SantaCruz, Seattle, TwinCities, WashingtonDC)
@@ -187,14 +163,6 @@ save(finalDF, file = "finalData.RData")
 #Building Graphs
 
 #Bar graph build
-locations <- c(
-  "Asheville", "Austin", "Boston","Bozeman", "Cambridge", "Chicago", "Columbus",
-  "Dallas", "Denver", "FortWorth", "FtLauderdale", "Hawaii",
-  "JerseyCity", "LasVegas", "LosAngeles", "Nashville", "Newark",
-  "NewOrleans", "NewYorkCity", "Oakland", "PacificGrove", "RhodeIsland",
-  "Rochester", "Salem", "SanDiego", "SanFrancisco", "SanMateo",
-  "SantaClara", "SantaCruz", "Seattle", "TwinCities", "WashingtonDC"
-)
 mean_prices <- numeric(length(locations))
 
 for (i in 1:length(locations)){
@@ -219,23 +187,14 @@ for (i in 1:length(locations)){
 sorted_index <- order(mean_reviews)
 sorted_locations <- locations[sorted_index]
 sorted_mean_reviews <- mean_reviews[sorted_index]
-plot(mean_reviews,mean_prices,xlab = "Mean Number of Reviews", ylab = "Mean Price per Night", )
+plot(mean_reviews,mean_prices,xlab = "Mean Number of Reviews", ylab = "Mean Price per Night",main = "Relationship between Mean Reviews and Mean Prices" )
 
 #Creating a similar bar graph based on the tax rate of short term rentals by state
 #https://realtorparty.realtor/wp-content/uploads/2018/11/HTA-Chart-State-Short-Term-Rental-Tax-Rate.pdf
-State_Tax_Rate = c(5,0,5.5,7.875,0,2.91,15,0,14.80,6,4,10.25,8,6,7,5,6.5,7,4.5,9,6,5,6,6.875,7,4.255,7,6.5,0,9,11.625,5.125,4,4.75,5,5.75,4.5,1.8,6,10.5,7,4.5,7,6,5.02,9,4.3,6.971,6,5,4)
-States_Alpha_Order <- c(
-  "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
-  "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
-  "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
-  "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi",
-  "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey",
-  "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma",
-  "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
-  "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
-  "West Virginia", "Wisconsin", "Wyoming","District of Columbia"
-)
-
+States_Alpha_Order_DF <- read.csv("States_Alpha_Order.csv")
+State_Tax_Rate_Df = read.csv("State_Tax_Rate.csv")
+States_Alpha_Order = States_Alpha_Order_DF$State
+State_Tax_Rate = State_Tax_Rate_Df$Rate
 
 sorted_index_tax <- order(State_Tax_Rate)
 sorted_locations_tax <- States_Alpha_Order[sorted_index_tax]
@@ -246,30 +205,16 @@ color_palette <- colorRampPalette(c("purple", "green"))(num_bars)
 barplot(sorted_tax_rate, main = "Tax Rate in Increasing Order", names.arg = sorted_locations_tax, las = 2, cex.names = 0.6, col = color_palette)
 
 #Creating a scatterplot of the states tax rate against the average rental price within the state.
-city_state_vector <- c(
-  "North Carolina", "Texas", "Massachusetts","Montana", "Massachusetts", "Illinois",
-  "Ohio", "Texas", "Colorado", "Texas", "Florida", "Hawaii", "New Jersey",
-  "Nevada", "California", "Tennessee", "New Jersey", "Louisiana", "New York",
-  "California", "California", "Rhode Island", "New York", "Oregon", "California",
-  "California", "California", "California", "California", "Washington",
-  "Minnesota", "District of Columbia"
-)
-city_state_tax_rate = c(4.75,6,5,5,6,5.75,6,2.91,6,6,10.25,11.625,0,0,7,11.625,0,4.5,4,0,0,10.5,4,1.8,0,0,0,0,0,6.971,6.875,14.80)
+city_state_vector_df <- read.csv("city_state.csv")
+city_state_vector <- city_state_vector_df$Column1
+#Source: https://www.airbnb.com/help/article/2509
+city_state_tax_rate = read.csv("CityTaxRate.csv")
 
 #Locations that require either an operating license or are zoning restricted
-restrictedList <- c("Asheville", "Dallas", "Denver", "FortWorth", "JerseyCity"
-                    ,"Oakland", "Salem", "SanFrancisco", "WashingtonDC")
-
-licenseList <- c("Austin", "Boston", "Columbus", "FtLauderdale", "Hawaii",
-                 "Nashville", "Newark", "New Orleans", "New York City",
-                 "PacificGrove", "RhodeIsland", "Seattle", "TwinCities")
-
-restrictedStates <- c("North Carolina", "Texas", "Colorado", "Texas", "New Jersey", "California",
-                      "Oregon", "California", "District of Columbia")
-
-licenseStates <- c("Texas", "Massachusetts", "Ohio", "Florida", "Hawaii", "Tennessee",
-                   "New Jersey", "Louisiana", "New York", "California", "Rhode Island"
-                   , "Washington", "Minnesota")
+restrictedList<- read.csv("RestrictedZoning.csv")
+licenseList <- read.csv("RequireLicense.csv")
+restrictedStates <- read.csv("RestrictedStates.csv")
+licenseStates <- read.csv("StatesRequiringLicense.csv")
 
 #Compute mean number of days vacant by city
 finalDF <- finalDF %>%
