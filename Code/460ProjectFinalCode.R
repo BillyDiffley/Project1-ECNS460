@@ -66,7 +66,9 @@ sorted_locations <- locations[sorted_index]
 sorted_mean_prices <- mean_prices[sorted_index]
 num_bars <- length(sorted_mean_prices)
 color_palette <- colorRampPalette(c("blue", "red"))(num_bars)
-barplot(sorted_mean_prices, main = "Mean Prices in Increasing Order", names.arg = sorted_locations, las = 2, cex.names = 0.9, col = color_palette)
+barplot(sorted_mean_prices, main = "Mean Prices in Increasing Order",
+        names.arg = sorted_locations, las = 2, cex.names = 0.9, col = color_palette
+        ,horiz = T, las = 1)
 
 #Scatterplot build
 mean_reviews <- numeric(length(locations))
@@ -94,7 +96,9 @@ sorted_tax_rate <- State_Tax_Rate[sorted_index_tax]
 num_bars <- length(sorted_index_tax)
 color_palette <- colorRampPalette(c("purple", "green"))(num_bars)
 
-barplot(sorted_tax_rate, main = "Tax Rate in Increasing Order", names.arg = sorted_locations_tax, las = 2, cex.names = 0.6, col = color_palette)
+barplot(sorted_tax_rate, main = "Tax Rate in Increasing Order",
+        names.arg = sorted_locations_tax, las = 2, cex.names = 0.6, col = color_palette,
+        horiz = T, las = 1)
 
 #Creating a scatterplot of the states tax rate against the average rental price within the state.
 city_state_vector_df <- read.csv("city_state.csv")
