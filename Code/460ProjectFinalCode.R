@@ -8,7 +8,7 @@ my_files <- list.files(pattern = "\\.csv$")
 citynames <- list()
 citynames <- lapply(my_files, read.csv)
 #Remove files created that are not data sets
-citynames <- citynames[-c(1,8,9,25:28,38,39,40)]
+citynames <- citynames[-c(1,8:10,26:29,39:41)]
 
 #Creates a list of locations we are looking into in the form of a string
 locationsdataframe <- read.csv("All_Locations.csv")
@@ -22,158 +22,31 @@ for (location in locations) {
   myFiles <- assign(paste(location), read.csv(file_paths[[location]]))
 }
 
-# Might be able to do the process iteratively
-locationstest <- c(
-  "Asheville", "Austin", "Boston", 'Bozeman', "Cambridge", "Chicago", "Columbus",
-  "Dallas", "Denver", "FortWorth", "FtLauderdale", "Hawaii",
-  "JerseyCity", "LasVegas", "LosAngeles", "Nashville", "Newark",
-  "NewOrleans", "NewYorkCity", "Oakland", "PacificGrove", "RhodeIsland",
-  "Rochester", "Salem", "SanDiego", "SanFrancisco", "SanMateo",
-  "SantaClara", "SantaCruz", "Seattle", "TwinCities", "WashingtonDC"
-)
+#Read in the list of cities
+locationstmp <- read.csv('CityList.csv')
+cities <- list()
+
+#Convert to list
+for(i in 1:nrow(locationstmp)) {       
+  cities[[i]] <- locationstmp[i,]     
+} 
+
+#Create "Location column for each data set to maintain a reference once all are bound together
+
 for(i in 1:length(citynames)) {
-  Location <- rep(locationstest[i], times = length(citynames[[i]]$id))
+  Location <- rep(cities[[i]], times = length(citynames[[i]]$id))
   citynames[[i]] <- cbind(citynames[[i]], Location)
 }
 
-Asheville <- as.data.frame(citynames[[1]])
-#Add a "Location" column to each data frame to maintain a reference once all have been bound together
-#Process cannot easily be made iterative as looping from one data frame to another is impractical
-
-Asheville <- Asheville %>%
-  mutate(Location = "Asheville") %>%
-  relocate(Location)
-
-Austin <- Austin %>%
-  mutate(Location = "Austin") %>%
-  relocate(Location)
-
-Boston <- Boston %>%
-  mutate(Location = "Boston") %>%
-  relocate(Location)
-
-Bozeman <- Bozeman %>%
-  mutate(Location = "Bozeman") %>%
-  relocate(Location)
-
-Cambridge <- Cambridge %>%
-  mutate(Location = "Cambridge") %>%
-  relocate(Location)
-
-Chicago <- Chicago %>%
-  mutate(Location = "Chicago") %>%
-  relocate(Location)
-
-Columbus <- Columbus %>%
-  mutate(Location = "Columbus") %>%
-  relocate(Location)
-
-Dallas <- Dallas %>%
-  mutate(Location = "Dallas") %>%
-  relocate(Location)
-
-Denver <- Denver %>%
-  mutate(Location = "Denver") %>%
-  relocate(Location)
-
-FortWorth <- FortWorth %>%
-  mutate(Location = "FortWorth") %>%
-  relocate(Location)
-
-FtLauderdale <- FtLauderdale %>%
-  mutate(Location = "FtLauderdale") %>%
-  relocate(Location)
-
-Hawaii <- Hawaii %>%
-  mutate(Location = "Hawaii") %>%
-  relocate(Location)
-
-JerseyCity <- JerseyCity %>%
-  mutate(Location = "JerseyCity") %>%
-  relocate(Location)
-
-LasVegas <- LasVegas %>%
-  mutate(Location = "LasVegas") %>%
-  relocate(Location)
-
-LosAngeles <- LosAngeles %>%
-  mutate(Location = "LosAngeles") %>%
-  relocate(Location)
-
-Nashville <- Nashville %>%
-  mutate(Location = "Nashville") %>%
-  relocate(Location)
-
-Newark <- Newark %>%
-  mutate(Location = "Newark") %>%
-  relocate(Location)
-
-NewOrleans <- NewOrleans %>%
-  mutate(Location = "NewOrleans") %>%
-  relocate(Location)
-
-NewYorkCity <- NewYorkCity %>%
-  mutate(Location = "NewYorkCity") %>%
-  relocate(Location)
-
-Oakland <- Oakland %>%
-  mutate(Location = "Oakland") %>%
-  relocate(Location)
-
-PacificGrove <- PacificGrove %>%
-  mutate(Location = "PacificGrove") %>%
-  relocate(Location)
-
-RhodeIsland <- RhodeIsland %>%
-  mutate(Location = "RhodeIsland") %>%
-  relocate(Location)
-
-Rochester <- Rochester %>%
-  mutate(Location = "Rochester") %>%
-  relocate(Location)
-
-Salem <- Salem %>%
-  mutate(Location = "Salem") %>%
-  relocate(Location)
-
-SanDiego <- SanDiego %>%
-  mutate(Location = "SanDiego") %>%
-  relocate(Location)
-
-SanFrancisco <- SanFrancisco %>%
-  mutate(Location = "SanFrancisco") %>%
-  relocate(Location)
-
-SanMateo <- SanMateo %>%
-  mutate(Location = "SanMateo") %>%
-  relocate(Location)
-
-SantaClara <- SantaClara %>%
-  mutate(Location = "SantaClara") %>%
-  relocate(Location)
-
-SantaCruz <- SantaCruz %>%
-  mutate(Location = "SantaCruz") %>%
-  relocate(Location)
-
-Seattle <- Seattle %>%
-  mutate(Location = "Seattle") %>%
-  relocate(Location)
-
-TwinCities <- TwinCities %>%
-  mutate(Location = "TwinCities") %>%
-  relocate(Location)
-
-WashingtonDC <- WashingtonDC %>%
-  mutate(Location = "WashingtonDC") %>%
-  relocate(Location)
+#Row Bind all data frames together
+finalDF <- do.call("rbind", citynames)
 
 
-#Create final data frame by row binding all data frames together at one time
-finalDF <- do.call("rbind", citynames1)
 
 #Remove useless columns
-finalDF <- finalDF[-c(2,5,14,18,19)]
+#finalDF <- finalDF[-c(2,5,14,18,19)]
+
+
 
 #Save data set
 save(finalDF, file = "finalData.RData")
