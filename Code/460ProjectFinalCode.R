@@ -2,6 +2,7 @@ rm(list=ls())
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
+library(ggpubr)
 
 #Create list of all data frames
 my_files <- list.files(pattern = "\\.csv$")
@@ -134,17 +135,6 @@ ggplot(taxedCities, aes(MeanPrice, AvgVacancy)) + geom_point() + geom_smooth(met
 #Remove zero tax rate from sample to look at the impact of "treated" cities
 taxedCitiesSub <- subset(taxedCities, city_state_tax_rate!=0)
 
-p = taxedCitiesSub %>% 
-  ggplot(aes(x = TaxRate, y = MeanPrice, label = Location)) +
-  geom_point(size = 2) +
-  geom_text(nudge_y = 15, size = 3) + 
-  xlab("Tax Rate by State") + 
-  ylab("Mean Price of STR by State") +
-  ggtitle("Tax Rate to Air BNB Price by State")
-
-p + geom_point(aes(color = IsLicensed), size = 3) + geom_smooth(method = "lm", se = F)
-p + geom_point(aes(color = IsRestricted), size = 3) + geom_smooth(method = "lm", se = F)
-
 #Plot tax rate and mean prices
 ggplot(taxedCitiesSub, aes(TaxRate, MeanPrice)) + geom_point() + geom_smooth(method = "lm")
 
@@ -175,7 +165,6 @@ b + geom_col(aes(color = isLicensed, fill = isLicensed))
 g <- ggplot(cityStates, aes(x = City, y = MeanPrice))
 g <- g + coord_flip()
 g + geom_col(aes(fill = isRestricted))
-
 
 #Filter for a group mean
 cityStates <- cityStates %>%
