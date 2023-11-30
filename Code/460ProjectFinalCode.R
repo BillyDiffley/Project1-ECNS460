@@ -64,8 +64,9 @@ sorted_mean_prices <- mean_prices[sorted_index]
 num_bars <- length(sorted_mean_prices)
 color_palette <- colorRampPalette(c("blue", "red"))(num_bars)
 barplot(sorted_mean_prices, main = "Mean Prices in Increasing Order",
-        names.arg = sorted_locations, las = 2, cex.names = 0.9, col = color_palette
+        names.arg = sorted_locations, cex.names = 0.55, col = color_palette
         ,horiz = T, las = 1)
+
 
 #Scatterplot build
 mean_reviews <- numeric(length(locations))
@@ -159,12 +160,14 @@ cityStates <- cityStates %>%
 
 #Bar chart for the group means of prices
 b <- ggplot(cityStates[1:2,], aes(x = isLicensed, y = GroupMeanL))
-b + geom_col(aes(color = isLicensed, fill = isLicensed)) +ggtitle("Relationship between Licensed and Group Mean")
+b + geom_col(aes(color = isLicensed, fill = isLicensed)) + 
+  ggtitle("Relationship Between Licensed and Group Mean")
 
 #Repeat process for restrictions
 g <- ggplot(cityStates, aes(x = City, y = MeanPrice))
 g <- g + coord_flip()
-g + geom_col(aes(fill = isRestricted))+ggtitle("Relationship between Mean Price and Restrictions")
+g + geom_col(aes(fill = isRestricted)) + 
+  ggtitle("Relationship Between Mean Price and Restrictions")
 
 #Filter for a group mean
 cityStates <- cityStates %>%
@@ -173,4 +176,4 @@ cityStates <- cityStates %>%
 
 #Bar chart for the group means of prices
 b <- ggplot(cityStates[c(1,3),], aes(x = isRestricted, y = GroupMeanR))
-b + geom_col(aes(fill = isRestricted)) +ggtitle("Comparison of Restricted against Non-Restricted")
+b + geom_col(aes(fill = isRestricted)) +ggtitle("Comparison of Restricted Against Non-Restricted")
