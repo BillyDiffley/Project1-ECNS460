@@ -24,7 +24,7 @@ After merging the data frames together, we took out the all columns we knew we w
 
 After importing and cleaning our data we were able to make several interesting findings, starting with a bar plot that shows the mean prices of a short term rental in increasing order. At one end of the spectrum we have Rochester where the mean price of a rental is just over 100 dollars per night whereas on the other end of the spectrum we have Hawaii where the mean price of a rental is over 500 dollars per night. This drastic difference is just one small piece into what we are looking to investigate and helps us determine where each individual city sits on the spectrum. This graph was primarily used to better understand our data set better in a visual way.
 
-![](Photos/MeanPrices_Barplot.png){width=250px}
+![](Photos/MeanPrices_Barplot.png){width=500px}
 
 After looking at the preliminary chart we began to focus on the relationship between policies and the prices of short term rentals. To begin this process, we created a vector of the short term rental tax rates by state we found from a secondary source. We unfortunately had to do this process, along with the linking of the rates with their respective state, manually as the scraping efforts were ineffective. We then made a similar bar plot as to the first bar plot we made where we display the tax rate of each state in increasing order. With the range of tax rates ranging up to as much as 15%, we new this was another great preliminary graph to add.
 ![](Photos/TaxRate_Barplot.png)
@@ -37,8 +37,8 @@ Another key aspect of the rental market is the vacancy problems that arise in th
 
 ![](Photos/PriceVacancy_Scatterplot.png)
 
-![](Photos/MeanPriceandRestrictions_Barplot.png)
-![Restrictions Group Plot](Photos/RestrictedComparison_Barplot.png)
+![](Photos/MeanPriceandRestrictions.png)
+![Restrictions Group Plot](Photos/RestrictedComparison_Barplot.png){width = 450px}
 
 #########
 Insert new charts for restriction and license

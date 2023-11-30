@@ -63,10 +63,12 @@ sorted_locations <- locations[sorted_index]
 sorted_mean_prices <- mean_prices[sorted_index]
 num_bars <- length(sorted_mean_prices)
 color_palette <- colorRampPalette(c("blue", "red"))(num_bars)
+
+png('MeanPrices_Barplot.png')
 barplot(sorted_mean_prices, main = "Mean Prices in Increasing Order",
         names.arg = sorted_locations, cex.names = 0.55, col = color_palette
         ,horiz = T, las = 1)
-
+dev.off()
 
 #Scatterplot build
 mean_reviews <- numeric(length(locations))
@@ -94,9 +96,11 @@ sorted_tax_rate <- State_Tax_Rate[sorted_index_tax]
 num_bars <- length(sorted_index_tax)
 color_palette <- colorRampPalette(c("purple", "green"))(num_bars)
 
+png('TaxRate_Barplot.png')
 barplot(sorted_tax_rate, main = "Tax Rate in Increasing Order",
-        names.arg = sorted_locations_tax, las = 2, cex.names = 0.6, col = color_palette,
+        names.arg = sorted_locations_tax, las = 2, cex.names = 0.5, col = color_palette,
         horiz = T, las = 1)
+dev.off()
 
 #Creating a scatterplot of the states tax rate against the average rental price within the state.
 city_state_vector_df <- read.csv("city_state.csv")
@@ -124,34 +128,42 @@ taxedCities <- cbind(taxedCities, city_state_tax_rate)
 colnames(taxedCities) <- c("Location", "MeanPrice", "AvgVacancy", "TaxRate")
 
 #Create new binary variable for grouping the variables
-
-
 taxedCities <- taxedCities %>%
   mutate(IsRestricted = ifelse(Location %in% restrictedStates$RS,T,F)) %>%
   mutate(IsLicensed = ifelse(Location %in% licenseStates$SRL,T,F))
 
 #Scatterplot of Mean Price and Average Vacancy at each location
-ggplot(taxedCities, aes(MeanPrice, AvgVacancy)) + geom_point() + geom_smooth(method = "lm") +ggtitle("Relationship between Mean Price and Average Vacancy")
+png('PriceVacancy_Scatterplot.png')
+ggplot(taxedCities, aes(MeanPrice, AvgVacancy)) + geom_point() + geom_smooth(method = "lm") +
+  ggtitle("Relationship between Mean Price and Average Vacancy") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(plot.title = element_text(size = 12))
+  
+dev.off()
 
 #Remove zero tax rate from sample to look at the impact of "treated" cities
 taxedCitiesSub <- subset(taxedCities, city_state_tax_rate!=0)
 
 #Plot tax rate and mean prices
+png('TaxRateMeanPrice_Scatterplot.png')
 ggplot(taxedCitiesSub, aes(TaxRate, MeanPrice)) + geom_point() + geom_smooth(method = "lm") +ggtitle("Relationship between Tax Rate and Mean Price")
+dev.off()
 
-################################
-
-#Revising final scatter plots for better messaging
-#Create more convenient data frame
+#Create more convenient data frame for plotting
 cityStates <- cbind(taxedCities, locationsdataframe)
 cityStates <- cityStates %>%
   relocate(Locations, .before = Location)
 colnames(cityStates) <- c("City",'State', "MeanPrice", "AvgVacancy", "TaxRate", 'isRestricted',
                           'isLicensed')
+
 #Create bar chart of each city and its mean price with license indicator
+png('MeanPricebyLicensed_Barplot.png')
 f <- ggplot(cityStates, aes(x = City, y = MeanPrice))
 f <- f + coord_flip()
-f + geom_col(aes(color = isLicensed, fill = isLicensed)) + ggtitle("Relationship between Mean Price by City")
+f + geom_col(aes(color = isLicensed, fill = isLicensed)) + ggtitle("Relationship Between Mean Price by City") +
+  theme(plot.title = element_text(size = 12)) +
+  theme(plot.title = element_text(hjust = 0.5))
+dev.off()
 
 #Filter for a group mean
 cityStates <- cityStates %>%
@@ -159,15 +171,26 @@ cityStates <- cityStates %>%
   mutate(GroupMeanL = mean(MeanPrice))
 
 #Bar chart for the group means of prices
+png('GroupMeanandLicensed_Barplot.png')
 b <- ggplot(cityStates[1:2,], aes(x = isLicensed, y = GroupMeanL))
 b + geom_col(aes(color = isLicensed, fill = isLicensed)) + 
-  ggtitle("Relationship Between Licensed and Group Mean")
+  ggtitle("Relationship Between Licensed and Group Mean") +
+  theme(plot.title = element_text(size = 12)) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  ylab('Mean Price') + xlab('License')
+dev.off()
 
 #Repeat process for restrictions
+
+png("MeanPriceandRestrictions.png")
 g <- ggplot(cityStates, aes(x = City, y = MeanPrice))
 g <- g + coord_flip()
 g + geom_col(aes(fill = isRestricted)) + 
-  ggtitle("Relationship Between Mean Price and Restrictions")
+  ggtitle("Relationship Between Mean Price and Restrictions") +
+  theme(plot.title = element_text(size = 12)) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+dev.off()
 
 #Filter for a group mean
 cityStates <- cityStates %>%
@@ -175,5 +198,10 @@ cityStates <- cityStates %>%
   mutate(GroupMeanR = mean(MeanPrice))
 
 #Bar chart for the group means of prices
+png("RestrictedComparison_Barplot.png")
 b <- ggplot(cityStates[c(1,3),], aes(x = isRestricted, y = GroupMeanR))
-b + geom_col(aes(fill = isRestricted)) +ggtitle("Comparison of Restricted Against Non-Restricted")
+b + geom_col(aes(fill = isRestricted)) + ggtitle("Comparison of Restricted Against Non-Restricted") +
+  theme(plot.title = element_text(size = 12)) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  ylab('Mean Price') + xlab('Restriction')
+dev.off()
