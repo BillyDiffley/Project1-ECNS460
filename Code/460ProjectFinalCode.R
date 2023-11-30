@@ -65,8 +65,9 @@ num_bars <- length(sorted_mean_prices)
 color_palette <- colorRampPalette(c("blue", "red"))(num_bars)
 
 png('MeanPrices_Barplot.png')
-barplot(sorted_mean_prices, main = "Mean Prices in Increasing Order",
-        names.arg = sorted_locations, cex.names = 0.55, col = color_palette
+par(mar = c(2.5,6,2,2))
+w <- barplot(sorted_mean_prices, main = "Mean Prices in Increasing Order",
+        names.arg = sorted_locations, cex.names = 0.8, col = color_palette
         ,horiz = T, las = 1)
 dev.off()
 
@@ -97,8 +98,9 @@ num_bars <- length(sorted_index_tax)
 color_palette <- colorRampPalette(c("purple", "green"))(num_bars)
 
 png('TaxRate_Barplot.png')
+par(mar = c(2.5,8,2,2))
 barplot(sorted_tax_rate, main = "Tax Rate in Increasing Order",
-        names.arg = sorted_locations_tax, las = 2, cex.names = 0.5, col = color_palette,
+        names.arg = sorted_locations_tax, las = 2, cex.names = 0.9, col = color_palette,
         horiz = T, las = 1)
 dev.off()
 
