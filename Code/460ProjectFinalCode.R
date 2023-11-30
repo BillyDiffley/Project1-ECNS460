@@ -129,7 +129,7 @@ taxedCities <- taxedCities %>%
   mutate(IsLicensed = ifelse(Location %in% licenseStates$SRL,T,F))
 
 #Scatterplot of Mean Price and Average Vacancy at each location
-ggplot(taxedCities, aes(MeanPrice, AvgVacancy)) + geom_point() + geom_smooth(method = "lm")
+ggplot(taxedCities, aes(MeanPrice, AvgVacancy)) + geom_point() + geom_smooth(method = "lm") +ggtitle("Relationship between Mean Price and Average Vacancy")
 
 #Remove zero tax rate from sample to look at the impact of "treated" cities
 taxedCitiesSub <- subset(taxedCities, city_state_tax_rate!=0)
@@ -146,7 +146,7 @@ p + geom_point(aes(color = IsLicensed), size = 3) + geom_smooth(method = "lm", s
 p + geom_point(aes(color = IsRestricted), size = 3) + geom_smooth(method = "lm", se = F)
 
 #Plot tax rate and mean prices
-ggplot(taxedCitiesSub, aes(TaxRate, MeanPrice)) + geom_point() + geom_smooth(method = "lm")
+ggplot(taxedCitiesSub, aes(TaxRate, MeanPrice)) + geom_point() + geom_smooth(method = "lm") +ggtitle("Relationship between Tax Rate and Mean Price")
 
 ################################
 
@@ -160,7 +160,7 @@ colnames(cityStates) <- c("City",'State', "MeanPrice", "AvgVacancy", "TaxRate", 
 #Create bar chart of each city and its mean price with license indicator
 f <- ggplot(cityStates, aes(x = City, y = MeanPrice))
 f <- f + coord_flip()
-f + geom_col(aes(color = isLicensed, fill = isLicensed))
+f + geom_col(aes(color = isLicensed, fill = isLicensed)) + ggtitle("Relationship between Mean Price by City")
 
 #Filter for a group mean
 cityStates <- cityStates %>%
@@ -169,12 +169,12 @@ cityStates <- cityStates %>%
 
 #Bar chart for the group means of prices
 b <- ggplot(cityStates[1:2,], aes(x = isLicensed, y = GroupMeanL))
-b + geom_col(aes(color = isLicensed, fill = isLicensed))
+b + geom_col(aes(color = isLicensed, fill = isLicensed)) +ggtitle("Relationship between Licensed and Group Mean")
 
 #Repeat process for restrictions
 g <- ggplot(cityStates, aes(x = City, y = MeanPrice))
 g <- g + coord_flip()
-g + geom_col(aes(fill = isRestricted))
+g + geom_col(aes(fill = isRestricted))+ggtitle("Relationship between Mean Price and Restrictions")
 
 
 #Filter for a group mean
@@ -184,4 +184,4 @@ cityStates <- cityStates %>%
 
 #Bar chart for the group means of prices
 b <- ggplot(cityStates[c(1,3),], aes(x = isRestricted, y = GroupMeanR))
-b + geom_col(aes(fill = isRestricted))
+b + geom_col(aes(fill = isRestricted)) +ggtitle("Comparison of Restricted against Non-Restricted")
