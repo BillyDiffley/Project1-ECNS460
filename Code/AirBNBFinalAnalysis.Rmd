@@ -38,7 +38,7 @@ Another key aspect of the rental market is the vacancy problems that arise in th
 ![](Photos/PriceVacancy_Scatterplot.png)
 
 ![](Photos/MeanPriceandRestrictions.png)
-![Restrictions Group Plot](Photos/RestrictedComparison_Barplot.png){width = 450px}
+![Restrictions Group Plot](Photos/RestrictedComparison_Barplot.png)
 
 #########
 Insert new charts for restriction and license
